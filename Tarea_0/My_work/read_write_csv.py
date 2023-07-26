@@ -43,10 +43,10 @@ def crear_usuario(new_name, usuarios):
 
 # Función para cargar datos de contactos a partir de archivo csv
 # Recibe path de archivo csv y retorna dict con llave el usuario y valor sus contactos
-def cargar_contactos(path_csv):
+def cargar_contactos():
     # Open file and read it
     contactos = defaultdict(set)
-    with open(path_csv, "r", encoding="UTF-8") as contacts_file:
+    with open(p.PATH_CONTACTOS, "r", encoding="UTF-8") as contacts_file:
         contacts_file.readline()
         contacts_list = [line.strip().split(",") for line in contacts_file]
         for user, contact in contacts_list:
@@ -55,12 +55,37 @@ def cargar_contactos(path_csv):
     return contactos
 
 
+# Función para agregar nuevo contacto y actualizar base de datos
+# Se verifica si el contacto nuevo es válido antes de añadirlo
+def nuevo_contacto(user_name, friend_name):
+    usuarios = cargar_usuarios()                    # Conjunto completo de usuarios de DCConecta2
+    contactos_all = cargar_contactos()              # Red completa de contactos de DCConecta2
+    contactos_user = contactos_all[user_name]       # Set con contactos del usuario
+
+    if friend_name in contactos_user:
+        print("Este usuario ya es parte de tus contactos!")
+        return False
+    elif friend_name not in usuarios:
+        print("El usuario que has indicado no existe en nuestra red DCConecta2!")
+        return False
+    else:
+        contactos_user.add(friend_name)
+        contactos_friend = contactos_all[friend_name]
+        contactos_friend.add(user_name)
+        with open(p.PATH_CONTACTOS, "a") as contacts_file:
+            contacts_file.write("\n" + user_name + "," + friend_name)
+            contacts_file.write("\n" + friend_name + "," + user_name)
+
+        print(f"Tu amigo {friend_name} es ahora uno de tus contactos en DCConecta2!")
+    return True
+
+
 # Función para cargar datos de grupos a partir de archivo csv
 # Recibe path de archivo csv y retorna dict con llave el grupo y valor sus integrantes
-def cargar_grupos(path_csv):
+def cargar_grupos():
     # Open file and read it
     grupos = defaultdict(set)
-    with open(path_csv, "r", encoding="UTF-8") as groups_file:
+    with open(p.PATH_GRUPOS, "r", encoding="UTF-8") as groups_file:
         groups_file.readline()
         groups_list = [line.strip().split(",") for line in groups_file]
         for group, user in groups_list:
@@ -136,26 +161,30 @@ def cargar_mensajes(path_csv):
 if __name__ == "__main__":
     import parametros as p
     # Test 1
-    usuarios = cargar_usuarios()
-    print(usuarios, "\n")
+    # usuarios = cargar_usuarios()
+    # print(usuarios, "\n")
 
     # Test 2
-    contactos = cargar_contactos(p.PATH_CONTACTOS)
-    print(contactos, "\n")
+    # contactos = cargar_contactos(p.PATH_CONTACTOS)
+    # print(contactos, "\n")
 
     # Test 3
-    grupos = cargar_grupos(p.PATH_GRUPOS)
-    print(grupos, "\n")
+    # grupos = cargar_grupos(p.PATH_GRUPOS)
+    # print(grupos, "\n")
 
     # Test 4
-    msg_regular, msg_grupo = cargar_mensajes(p.PATH_MENSAJES)
-    print(msg_regular, "\n")
-    print(msg_grupo, "\n")
+    # msg_regular, msg_grupo = cargar_mensajes(p.PATH_MENSAJES)
+    # print(msg_regular, "\n")
+    # print(msg_grupo, "\n")
 
     # Test 5
-    new_user_bool = crear_usuario("Incruento", usuarios)
-    print(new_user_bool, "\n")
+    # new_user_bool = crear_usuario("Incruento", usuarios)
+    # print(new_user_bool, "\n")
 
-    #Test 6
-    new_group_bool = crear_grupo("lily416", "Los JAJA", grupos, usuarios)
-    print(new_group_bool, "\n")
+    # Test 6
+    # new_group_bool = crear_grupo("lily416", "Los JAJA", grupos, usuarios)
+    # print(new_group_bool, "\n")
+
+    # Test 7
+    new_contact_bool = nuevo_contacto("Gatochico", "igbasly")
+    print(f"new contact bool = {new_contact_bool} \n")
