@@ -28,6 +28,10 @@ while working:
     elif flow == "Contactos_lista":
         flow, friend_name = m.lista_contactos(user_name)
 
+    # El flujo del programa 
+    elif flow == "Chat_contacto":
+        flow = m.chat_contacto(user_name, friend_name)
+
     # El flujo del programa se mueve al sub-menú que permite añadir un nuevo contacto DEL USUARIO
     elif flow == "Contactos_añadir":
         flow = m.agregar_contacto(user_name)
@@ -39,6 +43,10 @@ while working:
     # El flujo del programa se mueve al sub-menú que presenta la lista de grupos DEL USUARIO
     elif flow == "Grupos_lista":
         flow, group_name = m.lista_grupos(user_name)
+
+    # 
+    elif flow == "Chat_grupo":
+        pass
 
     # El flujo del programa se mueve al sub-menú que permite crear un nuevo grupo DEL USUARIO
     elif flow == "Grupos_crear":

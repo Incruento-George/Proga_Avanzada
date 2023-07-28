@@ -146,20 +146,40 @@ def crear_grupo(user_name, new_name):
 # Función para cargar datos de mensajes a partir de archivo csv
 # Recibe path de archivo csv y retorna dos dict (regular y grupo) con llave el emisor
 #  y valor la información del mensaje (receptor, fecha, contenido)
-def cargar_mensajes(path_csv):
+def cargar_mensajes():
     # Open file and read it
     msg_regular = defaultdict(list)
-    msg_grupo   = defaultdict(list)
-    with open(path_csv, "r", encoding="UTF-8") as msg_file:
+    msg_grupo   = []
+    with open(p.PATH_MENSAJES, "r", encoding="UTF-8") as msg_file:
         msg_file.readline()
         msg_list = [line.strip().split(",", maxsplit=4) for line in msg_file]
         for item in msg_list:
             if item[0] == "regular":
                 msg_regular[item[1]].append(item[2:])
             elif item[0] == "grupo":
-                msg_grupo[item[1]].append(item[2:])
+                msg_grupo.append(item[1:])
 
     return msg_regular, msg_grupo
+
+
+# Función para guardar nuevo mensaje del usuario a contacto en base de datos
+def guardar_mensaje(user_name, friend_name, mensaje, datetime):
+    # Open file and go to the end
+    with open(p.PATH_MENSAJES, "a", encoding="UTF-8") as msg_file:
+        msg_data = "regular," + user_name + "," + friend_name + "," + datetime  + "," + mensaje
+        msg_file.write("\n" + msg_data)
+    
+    return True
+
+
+#
+def guardar_mensaje_grupo(user_name, group_name, mensaje, datetime):
+    # Open file and go to the end
+    with open(p.PATH_MENSAJES, "a", encoding="UTF-8") as msg_file:
+        msg_data = "grupo," + user_name + "," + group_name + "," + datetime  + "," + mensaje
+        msg_file.write("\n" + msg_data)
+    
+    return True
 
 
 if __name__ == "__main__":
@@ -177,9 +197,9 @@ if __name__ == "__main__":
     # print(grupos, "\n")
 
     # Test 4
-    # msg_regular, msg_grupo = cargar_mensajes(p.PATH_MENSAJES)
+    msg_regular, msg_grupo = cargar_mensajes()
     # print(msg_regular, "\n")
-    # print(msg_grupo, "\n")
+    print(msg_grupo, "\n")
 
     # Test 5
     # new_user_bool = crear_usuario("Incruento", usuarios)
@@ -190,5 +210,5 @@ if __name__ == "__main__":
     # print(new_group_bool, "\n")
 
     # Test 7
-    new_contact_bool = nuevo_contacto("Gatochico", "igbasly")
-    print(f"new contact bool = {new_contact_bool} \n")
+    # new_contact_bool = nuevo_contacto("Gatochico", "igbasly")
+    # print(f"new contact bool = {new_contact_bool} \n")
