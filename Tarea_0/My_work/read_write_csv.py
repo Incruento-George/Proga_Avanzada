@@ -97,7 +97,7 @@ def cargar_grupos():
 # Función para crear nuevo grupo y agregarlo a la base de datos
 # Recibe el nombre del grupo, verifica que está disponible, lo agrega en caso positivo
 #  y en caso negativo no lo agrega e imprime mensaje de aviso
-def crear_grupo(usuario, new_name, grupos):
+def crear_grupo(user_name, new_name):
     usuarios = cargar_usuarios()
     grupos = cargar_grupos()
     grupos_names = grupos.keys()
@@ -121,6 +121,7 @@ def crear_grupo(usuario, new_name, grupos):
         group_users = input("Tu respuesta --> ")
         print()
         group_users = group_users.split(";")
+        del group_users[group_users.index(user_name)]
 
         # Check members
         if len(group_users) < 1:
@@ -134,7 +135,7 @@ def crear_grupo(usuario, new_name, grupos):
         print("Los integrantes han sido verificados exitosamente! Ahora crearé el grupo")
         grupos[new_name] = group_users
         with open(p.PATH_GRUPOS, "a") as groups_file:
-            groups_file.write("\n" + new_name + "," + usuario)
+            groups_file.write("\n" + new_name + "," + user_name)
             for member in group_users:
                 groups_file.write("\n" + new_name + "," + member)
             
