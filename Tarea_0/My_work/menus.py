@@ -173,6 +173,20 @@ def lista_grupos(user_name):
             return "Chat_grupo", group_name
 
 
+# Sub-menú del menú grupos que permite crear un nuevo grupo y añadir sus integrantes
+def crear_grupo(user_name):
+    group_names = rw.cargar_grupos().keys()
+    new_name = input("Escribe el nombre del grupo que quieres crear --> ")
+    new_bool = rw.crear_grupo(user_name, new_name)
+
+    if new_bool == False:
+        print("No se cumplieron todas las condiciones para crear el grupo!\n")
+    else:
+        print(f"El grupo {new_name} ya se encuentra disponible en tu lista de grupos!\n")
+
+    return "Grupos"
+
+
 if __name__ == "__main__":
     # Test 1
     # inicio_bool = menu_inicio()

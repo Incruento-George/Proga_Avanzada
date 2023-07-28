@@ -97,7 +97,10 @@ def cargar_grupos():
 # Función para crear nuevo grupo y agregarlo a la base de datos
 # Recibe el nombre del grupo, verifica que está disponible, lo agrega en caso positivo
 #  y en caso negativo no lo agrega e imprime mensaje de aviso
-def crear_grupo(usuario, new_name, grupos, usuarios):
+def crear_grupo(usuario, new_name, grupos):
+    usuarios = cargar_usuarios()
+    grupos = cargar_grupos()
+    grupos_names = grupos.keys()
     # Check rules
     # At least 1 char in the name of the group and no ","
     if len(new_name) < 1:
@@ -108,10 +111,10 @@ def crear_grupo(usuario, new_name, grupos, usuarios):
         return False
     
     # Create new group if not repeated
-    if new_name in grupos:
+    if new_name in grupos_names:
         print("El nombre del grupo se encuentra ocupado. Piensa en otro nombre!")
         return False
-    elif new_name not in grupos:
+    elif new_name not in grupos_names:
         # At least 2 users in the group to finally create it
         print("A continuación indica los usuarios a agregar al grupo con el siguiente formato:\n\n")
         print("usuario1;usuario2;...;usuarioN\n\n")
