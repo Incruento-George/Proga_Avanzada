@@ -182,6 +182,19 @@ def guardar_mensaje_grupo(user_name, group_name, mensaje, datetime):
     return True
 
 
+#
+def abandonar_grupo(user_name, group_name):
+    # Open file and copy lines
+    with open(p.PATH_GRUPOS, "r", encoding="UTF-8") as groups_file:
+        grupos_lines = groups_file.readlines()
+
+    # Open and overwrite file, deleting line with user who is leaving group
+    with open(p.PATH_GRUPOS, "w", encoding="UTF-8") as groups_file:
+        for line in grupos_lines:
+            if not (user_name in line and group_name in line):
+                groups_file.write(line)
+
+
 if __name__ == "__main__":
     import parametros as p
     # Test 1

@@ -44,9 +44,9 @@ while working:
     elif flow == "Grupos_lista":
         flow, group_name = m.lista_grupos(user_name)
 
-    # 
+    # El flujo del programa se mueve al chat del grupo escogido por el usuario
     elif flow == "Chat_grupo":
-        pass
+        flow = m.chat_grupo(user_name, group_name)
 
     # El flujo del programa se mueve al sub-menú que permite crear un nuevo grupo DEL USUARIO
     elif flow == "Grupos_crear":

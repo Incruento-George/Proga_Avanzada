@@ -106,6 +106,9 @@ def lista_contactos(user_name):
     
         print()
         friend_name = input("Escribe el nombre del contacto con el que vas a chatear --> ")
+        if friend_name == p.VOLVER_FRASE:
+            print("Volviendo al menú anterior... \n")
+            return "Contactos", None
         if friend_name not in contactos_user:
             print("Escribe correctamente el nombre de alguno de tus contactos!\n")
         else:
@@ -240,7 +243,10 @@ def lista_grupos(user_name):
     
         print()
         group_name = input("Escribe el nombre del grupo cuyo chat quieres abrir --> ")
-        if group_name not in grupos_user:
+        if group_name == p.VOLVER_FRASE:
+            print("Volviendo al menú anterior... \n")
+            return "Grupos", None
+        elif group_name not in grupos_user:
             print("Escribe correctamente el nombre de alguno de tus grupos!\n")
         else:
             print(f"Voy a abrir el chat del grupo {group_name}")
@@ -271,7 +277,7 @@ def chat_grupo(user_name, group_name):
             return "Grupos_lista"
         elif mensaje_user == p.ABANDONAR_FRASE:
             print(f"El usuario {user_name} ha abandonado el grupo")
-            
+            rw.abandonar_grupo(user_name, group_name)
             return "Grupos"
         else:
             datetime_msg = datetime.now()
