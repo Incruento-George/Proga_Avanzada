@@ -34,14 +34,17 @@ def instanciar_barco(barco_data):
         mercancias_obj.append(mercancia)
 
     if barco_data[1] == "Pasajero":
-        barco = BarcoPasajeros(barco_data[0], barco_data[2], barco_data[3], barco_data[4], \
-                               barco_data[5], barco_data[6], tripulantes_obj, mercancias_obj)
+        barco = BarcoPasajeros(barco_data[0], float(barco_data[2]), int(barco_data[3]), \
+                               int(barco_data[4]), int(barco_data[5]), barco_data[6], \
+                                tripulantes_obj, mercancias_obj)
     elif barco_data[1] == "Carguero":
-        barco = BarcoCarguero(barco_data[0], barco_data[2], barco_data[3], barco_data[4], \
-                               barco_data[5], barco_data[6], tripulantes_obj, mercancias_obj)
+        barco = BarcoCarguero(barco_data[0], float(barco_data[2]), int(barco_data[3]), \
+                               int(barco_data[4]), int(barco_data[5]), barco_data[6], \
+                                tripulantes_obj, mercancias_obj)
     elif barco_data[1] == "Buque":
-        barco = BarcoBuque(barco_data[0], barco_data[2], barco_data[3], barco_data[4], \
-                               barco_data[5], barco_data[6], tripulantes_obj, mercancias_obj)
+        barco = BarcoBuque(barco_data[0], float(barco_data[2]), int(barco_data[3]), \
+                               int(barco_data[4]), int(barco_data[5]), barco_data[6], \
+                                tripulantes_obj, mercancias_obj)
 
     return barco
 
