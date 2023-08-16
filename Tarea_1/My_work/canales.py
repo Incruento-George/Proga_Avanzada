@@ -3,6 +3,7 @@ import parametros as p
 import rw_files as rw
 import instanciador as inst
 from random import random
+from currency_converter import CurrencyConverter
 
 """
 This file only contains definitions of classes related with Canal
@@ -29,6 +30,8 @@ class Canal():
         self.num_barcos_idos = 0                        # int -> Número de barcos que han pasado
         self.num_barcos_encallados = 0                  # int -> Número de barcos que han encallado
         self.num_eventos_ocurridos = 0                  # int -> Número de eventos especiales
+        self.buques_detenidos = []
+        self.converter = CurrencyConverter()
 
         # Atributos que dependen de la dificultad del canal
         if self.dificultad == "principiante":

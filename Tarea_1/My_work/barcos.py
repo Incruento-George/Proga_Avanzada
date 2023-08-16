@@ -18,7 +18,7 @@ class Barcos(ABC):
         self.vel_base = vel_b                           # int
         self.pasajeros = pasajeros                      # int
         self.carga_max = carga_max                      # int
-        self.moneda_origen = moneda                     # str
+        self.moneda = moneda                            # str
         self.tripulacion = trip                         # list [class Tripulacion]
         self.mercancia = merc                           # list [class Mercancia]
 
@@ -40,7 +40,7 @@ class Barcos(ABC):
         desplazamiento = max(0.1, value_min) * self.vel_base    # En kilómetros
         self.posicion += desplazamiento
 
-        # Verificación de si el barco salió del canal se realiza dentro de la clase Canal
+        # Verificación de si el barco salió del canal se realiza fuera de esta clase
         return self.posicion
 
     # Se calcula y retorna el riesgo de que el barco encalle
@@ -66,16 +66,21 @@ class Barcos(ABC):
     # Al estar encallado, el barco no puede desplazarse ni gatillar su evento especial
     def encallar(self, dif_canal):
         prob_encallar = self.calcular_riesgo(dif_canal)
-        print(f"La probabilidad del barco {self.name} es de {prob_encallar * 100}%")
+        print(f"La probabilidad del barco {self.nombre} es de {prob_encallar * 100}%")
 
         # No ocurre el encallamiento del barco
         if random() > prob_encallar:
             print(f"El barco {self.nombre} no ha encallado y podrá seguir su camino\n")
+            return False
+        # El barco encalla bloqueando el canal
         else:
             print(f"¡El barco {self.nombre} ha encallado bloqueando el canal!\n")
+            if self.poder_capitan > 0:
+                print("Gracias al DCCapitán del barco, este fue desencallado automáticamente\n")
+                self.poder_capitan -= 1
+                return False
             self.encallado = True
-
-        return 
+            return True
 
     # Método abstracto -> Depende del tipo de barco
     @abstractmethod
@@ -115,15 +120,18 @@ class BarcoPasajeros(Barcos):
         # LOS EVENTOS ESPECIALES DE CADA BARCO OCURREN UNA SOLA VEZ POR BARCO
         if self.evento_done:
             return False
-        else:
+        elif not self.encallado:    # Un barco encallado no puede ejecutar su evento especial
             # Evento especial del barco no ocurre en esta iteración
             if random() > p.PROBABILIDAD_EVENTO_ESPECIAL:
                 return False
             else:
+                self.evento_done = True
                 print(f"\n¡Evento especial del barco {self.nombre} ocurriendo!")
                 print(f"Los pasajeros del {self.nombre} se han intoxicado y necesitan medicinas")
                 print(f"El barco ha pagado {p.DINERO_INTOXICACION} USD al canal por medicamentos")
                 return True
+        else:
+            return False
     
 
 # Tipo específico de barco - Evento especial: ataque de piratas -> No puede pagar tarifa de salida
@@ -134,9 +142,23 @@ class BarcoCarguero(Barcos):
         self.tend_encallar = p.TENDENCIA_ENCALLAR_CARGUERO
         self.tipo = "Carguero"
 
-    # POR IMPLEMENTAR - Barco pierde su mercancía por ataque de piratas, sin poder pagar al canal
+    # Barco pierde su mercancía por ataque de piratas, sin poder pagar al canal
     def evento_especial(self):
-        return None
+        # LOS EVENTOS ESPECIALES DE CADA BARCO OCURREN UNA SOLA VEZ POR BARCO
+        if self.evento_done:
+            return False
+        elif not self.encallado:    # Un barco encallado no puede ejecutar su evento especial
+            if random() > p.PROBABILIDAD_EVENTO_ESPECIAL:
+                return False
+            else:
+                self.evento_done = True
+                print(f"\n¡Evento especial del barco {self.nombre} ocurriendo!")
+                print(f"El {self.nombre} ha sido atacado por piratas y perdió toda su mercancía")
+                print(f"El barco no podrá pagar la tarifa de salida del canal")
+                self.mercancia = []
+                return True
+        else:
+            return False
     
 
 # Tipo específico de barco - Evento especial: avería interna -> No se desplaza por X horas
@@ -146,7 +168,20 @@ class BarcoBuque(Barcos):
         super().__init__(nombre, costo_m, vel_b, pasajeros, carga_max, moneda, trip, merc)
         self.tend_encallar = p.TENDENCIA_ENCALLAR_BUQUE
         self.tipo = "Buque"
+        self.tiempo_detenido = 0
 
     # POR IMPLEMENTAR - Barco sufre avería y se detiene por TIEMPO_AVERIA_BUQUE horas
     def evento_especial(self):
-        return None
+        # LOS EVENTOS ESPECIALES DE CADA BARCO OCURREN UNA SOLA VEZ POR BARCO
+        if self.evento_done:
+            return False
+        elif not self.encallado:    # Un barco encallado no puede ejecutar su evento especial
+            if random() > p.PROBABILIDAD_EVENTO_ESPECIAL:
+                return False
+            else:
+                self.evento_done = True
+                print(f"\n¡Evento especial del barco {self.nombre} ocurriendo!")
+                print(f"El barco {self.nombre} sufrió una avería interna y no podrá avanzar")
+                print(f"El barco estará detenido por {p.TIEMPO_AVERIA_BUQUE} horas")
+                self.tiempo_detenido = p.TIEMPO_AVERIA_BUQUE
+                return True

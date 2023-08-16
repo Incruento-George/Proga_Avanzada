@@ -17,7 +17,8 @@ while working:
     # Menú de inicio
     if flow == "Inicio":
         flow, canal_data = m.menu_inicio()
-        canal_obj = inst.instanciar_canal(canal_data)
+        if canal_data is not None:
+            canal_obj = inst.instanciar_canal(canal_data)
 
     # Menú de acciones
     elif flow == "Acciones":
@@ -28,4 +29,4 @@ while working:
         print("This text should not be printed [I am in main -> while working -> else]")
         sys.exit()
 
-    print("FIN")
+print("FIN")
