@@ -27,6 +27,7 @@ class Barcos(ABC):
         self.encallado = False          # Estado actual del barco en el canal
         self.poder_capitan = 0          # Cantidad de efectos especiales tipo DCCapitan acumulados
         self.evento_done = False        # Ocurrencia del evento especial del barco
+        self.tiempo_detenido = 0
 
     # El barco avanza a lo largo del canal a una nueva posición SI ES QUE NO ESTÁ ENCALLADO
     # Si un barco adelante de este está encallado, no puede avanzar más allá del barco encallado 
@@ -168,7 +169,6 @@ class BarcoBuque(Barcos):
         super().__init__(nombre, costo_m, vel_b, pasajeros, carga_max, moneda, trip, merc)
         self.tend_encallar = p.TENDENCIA_ENCALLAR_BUQUE
         self.tipo = "Buque"
-        self.tiempo_detenido = 0
 
     # POR IMPLEMENTAR - Barco sufre avería y se detiene por TIEMPO_AVERIA_BUQUE horas
     def evento_especial(self):

@@ -74,7 +74,7 @@ def menu_acciones(canal):
             if barco_nombre not in barcos_encallados:
                 print("El barco indicado no se encuentra en la lista de encallados ...\n")
             else:
-                desencallar_resultado = canal_obj.desencallar_barco(barco_nombre)
+                desencallar_resultado = canal.desencallar_barco(barco_nombre)
             return "Acciones"
     
     # Revisar si canal bloqueado, ingresar barco, calcular si encallaron barcos, evento especial
@@ -103,7 +103,7 @@ def menu_acciones(canal):
             barco_entrar = input(" --> ")
             if barco_entrar == "0":
                 print(f"En esta hora de simulación no ingresará ningún barco al canal\n")
-            if barco_entrar in canal.barcos_nombres:
+            elif barco_entrar in canal.barcos_nombres:
                 print("¡Debes elegir un barco que no esté dentro del canal!\n")
                 return "Acciones"
             elif barco_entrar not in barcos_data.keys():
@@ -155,7 +155,7 @@ def menu_acciones(canal):
 
         print()         # Se simula el desplazamiento de los barcos a través del canal
         for barco in canal.barcos:
-            if not barco.encallado and barco.posicion >= max_pos_enc:
+            if not barco.encallado and barco.tiempo_detenido <= 0 and barco.posicion >= max_pos_enc:
                 barco.desplazarse()
                 print(f"El barco {barco.nombre} se desplazó al kilómetro {barco.posicion}")
 
@@ -167,7 +167,9 @@ def menu_acciones(canal):
                 print(f"¡El barco {barco.nombre} salió del canal!")
                 if barco.tipo == "Carguero" and barco.evento_done:
                     print(f"Este barco fue atacado por piratas y no pagará la tarifa de salida")
+                    # SACAR OBJ BARCO DEL OBJ CANAL
                 else:
+                    # SACAR OBJ BARCO DEL OBJ CANAL
                     print(f"Este barco le ha pagado la tarifa de salida al canal")
                     if canal.dificultad == "principiante":
                         canal.dinero += p.COBRO_USO_PRINCIPIANTE
@@ -182,7 +184,7 @@ def menu_acciones(canal):
                 costo_m_usd = canal.converter.convert(barco.costo_mantencion, barco.moneda, "USD")
                 canal.dinero -= costo_m_usd
                 dinero_gastado_hora += costo_m_usd
-                canal.dinero_gastado -= costo_m_usd
+                canal.dinero_gastado += costo_m_usd
                 print(f"El canal pagó {costo_m_usd} USD por mantención del barco {barco.nombre}")
 
         # Resumen de la hora avanzada: Barcos en el canal
@@ -196,6 +198,14 @@ def menu_acciones(canal):
 
         # Últimos efectos por finalización de la hora simulada
         canal.horas_sim += 1
+        index_del = []
+        for buque in canal.buques_detenidos:
+            buque.tiempo_detenido -= 1
+            if buque.tiempo_detenido <= 0:
+                index_del.append(canal.buques_detenidos.index(buque))
+        for num in index_del:
+            del canal.buques_detenidos[num]
+            
         return "Acciones"
     
     # Se despliega en consola toda la información relevante del estado de la simulación
@@ -211,7 +221,7 @@ def menu_acciones(canal):
 
         print(f"Un total de {canal.num_barcos_idos} han pasado por el canal")
         print(f"Un total de {canal.num_barcos_encallados} encallamientos han ocurrido")
-        print(f"Un total de {canal.num_eventos_ocurridos} han ocurrido en este tiempo\n")
+        print(f"Un total de {canal.num_eventos_ocurridos} eventos especiales han ocurrido\n")
         return "Acciones"
     
     # Usuario regresa al menú de inicio
@@ -224,7 +234,7 @@ def menu_acciones(canal):
         sys.exit()
     # Respuesta no válida
     else:
-        return menu_acciones()
+        return menu_acciones(canal)
 
 
 if __name__ == "__main__":
